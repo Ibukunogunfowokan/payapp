@@ -1,0 +1,59 @@
+# Local infrastructure for PayApp: Postgres, RabbitMQ and Mailpit.
+# The API and Worker run on your Mac with `dotnet run` and connect via localhost.
+#
+# Start:  docker compose up -d
+# Stop:   docker compose down        (data is kept)
+# Wipe:   docker compose down -v     (deletes the database and queues)
+#
+# Values like ${POSTGRES_USER} are read automatically from the .env file next to this one.
+
+name: payapp
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: payapp-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: payapp-rabbitmq
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+    ports:
+      - "5672:5672"     # the app connects here
+      - "15672:15672"   # web dashboard: http://localhost:15672
+    volumes:
+      - rabbitmqdata:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  mailpit:
+    image: axllent/mailpit
+    container_name: payapp-mailpit
+    restart: unless-stopped
+    ports:
+      - "1025:1025"     # SMTP: the Worker sends email here
+      - "8025:8025"     # inbox: http://localhost:8025
+
+volumes:
+  pgdata:
+  rabbitmqdata:
