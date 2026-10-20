@@ -1,0 +1,49 @@
+@baseUrl = http://localhost:5146
+@email = you@example.com
+
+### Register (then open the confirm link in Mailpit: http://localhost:8025)
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "Passw0rd!",
+  "fullName": "Your Name",
+  "marketingOptIn": true
+}
+
+### Resend the confirmation email
+POST {{baseUrl}}/api/auth/resend-confirmation
+Content-Type: application/json
+
+{ "email": "{{email}}" }
+
+### Log in (sets the payapp.auth cookie)
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{ "email": "{{email}}", "password": "Passw0rd!" }
+
+### Who am I?
+GET {{baseUrl}}/api/auth/me
+
+### Log out
+POST {{baseUrl}}/api/auth/logout
+
+### Forgot password (the reset code arrives in Mailpit)
+POST {{baseUrl}}/api/auth/forgot-password
+Content-Type: application/json
+
+{ "email": "{{email}}" }
+
+### Reset password (paste the code from the email)
+POST {{baseUrl}}/api/auth/reset-password
+Content-Type: application/json
+
+{ "email": "{{email}}", "token": "PASTE_CODE_HERE", "newPassword": "N3wPassw0rd!" }
+
+### Start a ₦100 payment (open checkoutUrl in your browser and pay with a Paystack test card)
+POST {{baseUrl}}/api/payments/
+
+### My payments
+GET {{baseUrl}}/api/payments/

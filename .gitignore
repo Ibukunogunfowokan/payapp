@@ -1,0 +1,12 @@
+
+# Secrets
+.env
+!.env.example
+
+# Build output
+bin/
+obj/
+.vs/
+.idea/
+*.user
+.DS_Store

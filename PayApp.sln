@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PayApp.Api", "PayApp.Api\PayApp.Api.csproj", "{93244A19-1D86-42F0-9DE1-CB9336ED3C86}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PayApp.Worker", "PayApp.Worker\PayApp.Worker.csproj", "{88DE9CEA-0CDD-4831-AC6F-136BA237D910}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PayApp.Core", "PayApp.Core\PayApp.Core.csproj", "{D9764F65-EB2A-40B7-B3B2-A4C1DDF9B3E1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{93244A19-1D86-42F0-9DE1-CB9336ED3C86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93244A19-1D86-42F0-9DE1-CB9336ED3C86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93244A19-1D86-42F0-9DE1-CB9336ED3C86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93244A19-1D86-42F0-9DE1-CB9336ED3C86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88DE9CEA-0CDD-4831-AC6F-136BA237D910}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88DE9CEA-0CDD-4831-AC6F-136BA237D910}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88DE9CEA-0CDD-4831-AC6F-136BA237D910}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88DE9CEA-0CDD-4831-AC6F-136BA237D910}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9764F65-EB2A-40B7-B3B2-A4C1DDF9B3E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9764F65-EB2A-40B7-B3B2-A4C1DDF9B3E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9764F65-EB2A-40B7-B3B2-A4C1DDF9B3E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9764F65-EB2A-40B7-B3B2-A4C1DDF9B3E1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
