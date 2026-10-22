@@ -1,0 +1,18 @@
+{
+  "envs": [
+    {
+      "product_env_slug": "snd",
+      "app_env_slug": "snd",
+      "credentials": {
+        "headers:Authorization": "Bearer $Secret{PAYSTACK_SECRET_KEY}"
+      }
+    },
+    {
+      "product_env_slug": "prd",
+      "app_env_slug": "prd",
+      "credentials": {
+        "headers:Authorization": "Bearer $Secret{PAYSTACK_SECRET_KEY}"
+      }
+    }
+  ]
+}

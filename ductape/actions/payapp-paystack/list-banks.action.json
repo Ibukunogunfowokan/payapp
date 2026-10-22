@@ -1,0 +1,21 @@
+{
+  "tag": "list-banks",
+  "name": "List banks",
+  "resource": "bank",
+  "method": "GET",
+  "request_type": "application/json",
+  "description": "List banks supported by Paystack (read-only; used to test the connection)",
+  "headers": {
+    "type": "json",
+    "sample": {
+      "Authorization": "Bearer <PAYSTACK_SECRET_KEY>"
+    }
+  },
+  "query": {
+    "type": "json",
+    "sample": {
+      "country": "nigeria",
+      "perPage": "5"
+    }
+  }
+}

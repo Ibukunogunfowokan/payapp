@@ -1,0 +1,20 @@
+{
+  "tag": "verify-transaction",
+  "name": "Verify transaction",
+  "resource": "transaction/verify/{reference}",
+  "method": "GET",
+  "request_type": "application/json",
+  "description": "Check the status of a Paystack transaction by reference",
+  "headers": {
+    "type": "json",
+    "sample": {
+      "Authorization": "Bearer <PAYSTACK_SECRET_KEY>"
+    }
+  },
+  "params": {
+    "type": "json",
+    "sample": {
+      "reference": "ref_123"
+    }
+  }
+}

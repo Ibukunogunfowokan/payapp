@@ -10,3 +10,7 @@ obj/
 .idea/
 *.user
 .DS_Store
+
+# Ductape registration files contain local connection passwords
+ductape/databases/
+ductape/brokers/

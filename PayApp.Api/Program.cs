@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using PayApp.Api;
 using PayApp.Api.Auth;
 using PayApp.Api.Email;
+using PayApp.Api.Integrations;
 using PayApp.Api.Payments;
 using PayApp.Core.Configuration;
 using PayApp.Core.Data;
@@ -47,6 +48,8 @@ builder.Services.AddSingleton<AppUrls>();
 builder.Services.AddSingleton<EmailQueuePublisher>();
 builder.Services.AddScoped<EmailOutbox>();
 builder.Services.AddScoped<PaymentService>();
+builder.Services.AddSingleton<DuctapeService>();
+builder.Services.AddHostedService<DuctapeStartupCheck>();
 
 builder.Services.AddHttpClient<PaystackClient>(client =>
 {

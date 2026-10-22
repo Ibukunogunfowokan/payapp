@@ -1,0 +1,21 @@
+{
+  "tag": "payapp-paystack",
+  "app_name": "Paystack",
+  "description": "Paystack payments API",
+  "envs": [
+    {
+      "env_name": "sandbox",
+      "slug": "snd",
+      "description": "Paystack test mode (sk_test key)",
+      "base_url": "https://api.paystack.co",
+      "active": true
+    },
+    {
+      "env_name": "production",
+      "slug": "prd",
+      "description": "Paystack live mode (sk_live key)",
+      "base_url": "https://api.paystack.co",
+      "active": true
+    }
+  ]
+}

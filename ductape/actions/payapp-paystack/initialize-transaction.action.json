@@ -1,0 +1,24 @@
+{
+  "tag": "initialize-transaction",
+  "name": "Initialize transaction",
+  "resource": "transaction/initialize",
+  "method": "POST",
+  "request_type": "application/json",
+  "description": "Start a Paystack transaction and get the hosted checkout URL",
+  "headers": {
+    "type": "json",
+    "sample": {
+      "Authorization": "Bearer <PAYSTACK_SECRET_KEY>"
+    }
+  },
+  "body": {
+    "type": "json",
+    "sample": {
+      "email": "customer@example.com",
+      "amount": 500000,
+      "currency": "NGN",
+      "reference": "ref_123",
+      "callback_url": "https://example.ngrok.app/payments/callback"
+    }
+  }
+}
