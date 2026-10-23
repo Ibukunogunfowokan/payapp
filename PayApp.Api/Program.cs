@@ -51,15 +51,34 @@ builder.Services.AddScoped<PaymentService>();
 builder.Services.AddSingleton<DuctapeService>();
 builder.Services.AddHostedService<DuctapeStartupCheck>();
 
-builder.Services.AddHttpClient<PaystackClient>(client =>
+// PAYMENTS_PROVIDER=direct (default) calls Paystack over HTTP; ductape routes the same calls through Ductape.
+var paymentsProvider = config.Optional("PAYMENTS_PROVIDER", "direct").ToLowerInvariant();
+switch (paymentsProvider)
 {
-    var secretKey = config.Required("PAYSTACK_SECRET_KEY");
-    if (!secretKey.StartsWith("sk_test_"))
-        throw new InvalidOperationException("PayApp only runs against Paystack test mode. Use an sk_test_ key.");
+    case "direct":
+        builder.Services.AddHttpClient<PaystackClient>(client =>
+        {
+            var secretKey = config.Required("PAYSTACK_SECRET_KEY");
+            if (!secretKey.StartsWith("sk_test_"))
+                throw new InvalidOperationException("PayApp only runs against Paystack test mode. Use an sk_test_ key.");
 
-    client.BaseAddress = new Uri("https://api.paystack.co/");
-    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", secretKey);
-});
+            client.BaseAddress = new Uri("https://api.paystack.co/");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", secretKey);
+        });
+        builder.Services.AddTransient<IPaystackGateway>(services => services.GetRequiredService<PaystackClient>());
+        break;
+
+    case "ductape":
+        // Ductape holds the key for outgoing calls, but the webhook still checks signatures with this one.
+        if (!config.Required("PAYSTACK_SECRET_KEY").StartsWith("sk_test_"))
+            throw new InvalidOperationException("PayApp only runs against Paystack test mode. Use an sk_test_ key.");
+
+        builder.Services.AddSingleton<IPaystackGateway, DuctapePaystackGateway>();
+        break;
+
+    default:
+        throw new InvalidOperationException($"PAYMENTS_PROVIDER must be 'direct' or 'ductape', not '{paymentsProvider}'.");
+}
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

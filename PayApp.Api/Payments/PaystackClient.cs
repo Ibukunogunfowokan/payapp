@@ -9,7 +9,7 @@ public record PaystackEvent(string? Event, PaystackTransaction? Data);
 
 public class PaystackException(string message) : Exception(message);
 
-public class PaystackClient(HttpClient http)
+public class PaystackClient(HttpClient http) : IPaystackGateway
 {
     public static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web)
     {

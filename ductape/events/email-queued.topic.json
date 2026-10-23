@@ -1,0 +1,9 @@
+{
+  "tag": "payapp-rabbitmq:email-queued",
+  "name": "Email Queued",
+  "description": "An email row was saved and is ready for the worker to send",
+  "sample": {
+    "emailId": "00000000-0000-0000-0000-000000000000"
+  },
+  "idempotent": true
+}

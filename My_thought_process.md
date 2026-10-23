@@ -191,6 +191,21 @@ If RabbitMQ was down when the API saved an email, the id never reached the queue
 - For Brevo or Resend in Phase 6, set `EMAIL_SMTP_HOST`, `EMAIL_SMTP_PORT=587`, `EMAIL_SMTP_USER`, `EMAIL_API_KEY` and `EMAIL_SMTP_ENABLE_SSL=true`. No code changes.
 - Microsoft now recommends MailKit over `SmtpClient`. We avoided adding a library we hadn't agreed on, and `SmtpClient` works fine with both providers on port 587.
 
+## 6. Switching Paystack calls to Ductape (`PAYMENTS_PROVIDER`)
+
+**Files:** `Payments/IPaystackGateway.cs`, `Payments/DuctapePaystackGateway.cs`, `Program.cs`
+
+- The endpoints only need two things from Paystack: *initialize* (returns a checkout URL) and *verify* (returns a `PaystackTransaction`). That is the `IPaystackGateway` interface.
+- `PaystackClient` (direct HTTP) already did both, so it just declares `: IPaystackGateway`. Nothing else in it changed.
+- `DuctapePaystackGateway` does the same two jobs by running the `initialize_transaction` and `verify_transaction` actions on the `payapp-paystack` app through `DuctapeService`. Ductape adds the `Authorization` header from its own secret, so the key isn't sent from our code.
+- `PAYMENTS_PROVIDER=direct` (default) or `ductape` picks the implementation in `Program.cs`. Anything else fails at startup. `PaymentService.ApplyAsync` is untouched: it only ever sees a `PaystackTransaction`, so idempotency and the receipt email work the same in both modes.
+- **Ductape's answer is wrapped.** The SDK returns `{ process_id, status, data }` and `data` is Paystack's own `{ status, message, data }`. `Unwrap` peels both layers and throws `PaystackException` on any failure, so the endpoints' existing `catch` blocks still work.
+- **The webhook stays in .NET** in both modes. It checks the HMAC signature with `PAYSTACK_SECRET_KEY`, so that key must stay in `.env`. In ductape mode the app also refuses to start unless that key is `sk_test_...` (it can't see the key Ductape holds, so this is only a partial guard).
+- Remote action tags use underscores (`verify_transaction`); the local files under `ductape/actions/` use hyphens. Runtime uses the remote ones.
+- `Callback` now logs the `PaystackException`. Before, a failed verify returned 502 with nothing in the log.
+
+**Status:** `direct` is tested (callback on an existing paid payment returns `Success`). `ductape` is **not working yet**: `verify_transaction` reaches Paystack but fails with `400 Invalid character in transaction reference`, even for a valid reference like `abc123`, so Ductape isn't filling the `{reference}` placeholder in `transaction/verify/{reference}`. `initialize_transaction` has not been run, because it creates a real (test-mode) Paystack transaction.
+
 ## Known limits of v1 (deliberate)
 
 - **No UI yet.** Everything is tested through Swagger (`http://localhost:5146/swagger`) or `PayApp.Api.http`. The frontend decision (Razor Pages vs React) is still open.

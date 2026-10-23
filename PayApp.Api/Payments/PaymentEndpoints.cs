@@ -22,7 +22,7 @@ public static class PaymentEndpoints
     }
 
     private static async Task<IResult> StartPayment(ClaimsPrincipal principal, UserManager<AppUser> users,
-        AppDbContext db, PaystackClient paystack, AppUrls urls, ILogger<PaystackClient> logger,
+        AppDbContext db, IPaystackGateway paystack, AppUrls urls, ILogger<PaystackClient> logger,
         CancellationToken cancellationToken)
     {
         var user = await users.GetUserAsync(principal);
@@ -66,8 +66,8 @@ public static class PaymentEndpoints
 
     // Paystack redirects the browser here after checkout. We never trust the browser's word;
     // we ask Paystack directly (server to server) what happened.
-    private static async Task<IResult> Callback(string reference, PaystackClient paystack, PaymentService payments,
-        AppDbContext db, CancellationToken cancellationToken)
+    private static async Task<IResult> Callback(string reference, IPaystackGateway paystack, PaymentService payments,
+        AppDbContext db, ILogger<PaystackClient> logger, CancellationToken cancellationToken)
     {
         if (!await db.Payments.AnyAsync(p => p.Reference == reference, cancellationToken))
             return Results.NotFound(new { message = "Payment not found." });
@@ -76,8 +76,9 @@ public static class PaymentEndpoints
         {
             await payments.ApplyAsync(await paystack.VerifyAsync(reference, cancellationToken), cancellationToken);
         }
-        catch (PaystackException)
+        catch (PaystackException ex)
         {
+            logger.LogError(ex, "Could not verify Paystack payment {Reference}", reference);
             return Results.Problem("We couldn't confirm this payment yet. Check your payments list shortly.",
                 statusCode: StatusCodes.Status502BadGateway);
         }
